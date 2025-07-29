@@ -1,12 +1,12 @@
-# An example project showing the flow through Vivado and Vitis for RTL kernels.
-## In this project I use the [AMD Kria KV260 FPGA](https://www.amd.com/en/products/system-on-modules/kria/k26/kv260-vision-starter-kit.html).
+# An example project showing the flow through Vivado and Vitis for RTL kernels
+## In this project I use the [AMD Kria KV260 FPGA](https://www.amd.com/en/products/system-on-modules/kria/k26/kv260-vision-starter-kit.html)
 
 
 ### Computer that Runs Vivado/Vitis
 An essential part of the design flow is using [Vivado](https://www.amd.com/en/products/software/adaptive-socs-and-fpgas/vivado.html) and [Vitis](https://www.amd.com/en/products/software/adaptive-socs-and-fpgas/vitis.html), you can download them at [this site](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools.html). In my example I use the 2025.1 versions of Vivado and Vitis.
 
 #### Your OS
-Vivado and Vitis are not supported with all OS version. You can find the list of supported OS versions [here](https://docs.amd.com/r/en-US/ug973-vivado-release-notes-install-license/Supported-Operating-Systems), I dont have any reccomendations for the OS to use but note that if you are not using one of the supported OS versions, they will not help you on the forums. 
+Vivado and Vitis are not supported with all OS version. You can find the list of supported OS versions [here](https://docs.amd.com/r/en-US/ug973-vivado-release-notes-install-license/Supported-Operating-Systems), I dont have any reccomendations for the OS to use but note that if you are not using one of the supported OS versions, AMD suppurt will not help you on the forums. 
 
 #### Unsupported OS Versions
 If you are trying to install Vivado and Vitis on an unsupported OS, it may not work and it may not be worth the effort. I use linuxmint 22.1 which is unsupported but I have gotten it to work. When installing some of the software, the scripts check for the OS you are using but you can trick them into installing anyways. This is done by changing your /etc/os-release file to make it look like it is a supported OS.
@@ -25,7 +25,7 @@ PRIVACY_POLICY_URL="https://www.linuxmint.com/"
 VERSION_CODENAME=xia
 UBUNTU_CODENAME=noble
 ```
-and you only need to change the VERSION AND ID variables:
+and you only need to change the VERSION and the ID variables:
 ```
 NAME="Linux Mint"
 VERSION="24.04 LTS (Noble Numbat)"
@@ -91,7 +91,7 @@ make package
 cd ../Debug
 make package
 
-# It's optional to build the documentation too, go to the build directory
+# It's optional to build the documentation too, this is done in the build directory
 cd ..   
 ./build.sh docs
 # To browse the generated local documentation with a web browser:
@@ -115,9 +115,9 @@ After the FPGA is set up, you are ready to connect it to your PC. For this you n
 
 Connect the ethernet cable and micro USB into the FPGA, do not connect the usb end of the micro-USB to USB cable into your computer yet.
 
-Plug the power cable into the FPGA and wait for it to boot up, once the fan speed decreases and you can see the heartbeat led blinking, you can plug the USB end of the cable into your computer. 
+Plug the power cable into the FPGA and wait for it to boot up, when you can see the heartbeat led blinking, you can plug the USB end of the cable into your computer. 
 
-To interface between your PC and the FPGA, I reccomend using PuTTY (which can be installed with `sudo apt install putty`).
+To interface between your PC and the FPGA, I recommend using PuTTY (which can be installed with `sudo apt install putty`).
 ```
 # After you have plugged the USB cable into your PC, you need to identify which USB port the FPGA is using. You can use the below command to see the COM ports on your device. Running the command before and after plugging in the USB to your computer can be helpful in identifying the device.
 dmesg | grep tty
@@ -125,4 +125,12 @@ dmesg | grep tty
 sudo putty /dev/ttyUSB1 -serial -sercfg 115200,8,n,1,N
 ```
 
-After you have started the putty session, you will 
+After you have started the putty session, log into the account you set up on the FPGA (typically ubuntu). 
+
+For now you can turn off the FPGA and leave it off until after getting the output files from Vitis (make sure to use the `sudo shutdown -h now` command).
+
+
+### Getting the Xilinx Support Archive (.xsa) with Vivado
+
+### Getting the Xilinx Object file with the Vivado RTL Kernel Wizard
+

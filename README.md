@@ -132,5 +132,5 @@ For now you can turn off the FPGA and leave it off until after getting the outpu
 
 ### Getting the Xilinx Support Archive (.xsa) with Vivado
 
-### Getting the Xilinx Object file with the Vivado RTL Kernel Wizard
+### Getting the Xilinx Object (.xo) file with the Vivado RTL Kernel Wizard
 

@@ -1,8 +1,7 @@
-# An example project showing the flow through Vivado and Vitis for RTL kernels
-## In this project I use the [AMD Kria KV260 FPGA](https://www.amd.com/en/products/system-on-modules/kria/k26/kv260-vision-starter-kit.html)
+# An example project showing the flow through Vivado and Vitis for RTL kernels for the [AMD Kria KV260 FPGA](https://www.amd.com/en/products/system-on-modules/kria/k26/kv260-vision-starter-kit.html)
+## In this guide I stitch together the documentation for Vivado and Vitis, showing how to create your own RTL kernel applications with the Kria KV260.
 
-
-### Computer that Runs Vivado/Vitis
+### Vivado/Vitis
 An essential part of the design flow is using [Vivado](https://www.amd.com/en/products/software/adaptive-socs-and-fpgas/vivado.html) and [Vitis](https://www.amd.com/en/products/software/adaptive-socs-and-fpgas/vitis.html), you can download them at [this site](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools.html). In my example I use the 2025.1 versions of Vivado and Vitis.
 
 #### Your OS
@@ -105,21 +104,19 @@ If you changed your /etc/os-release file, change it back to normal now.
 To get started with the FPGA, follow the Kria Ubuntu 22.04 Boot Linux Instructions found [here](https://xilinx.github.io/kria-apps-docs/kv260/2022.1/build/html/docs/linux_boot.html).
 After you have finished with setting up the OS and updated firmware, the FPGA is ready to be used. 
 
-Note that you can use other OS versions for the FPGA if you want but for PS-PL applications, you need an OS that works with [XRT](https://github.com/Xilinx/XRT).
+You can use other OS versions for the FPGA if you want but for PS-PL applications, you need an OS that works with [XRT](https://github.com/Xilinx/XRT).
 
-Also note that I tried using the Kria Ubuntu 24.04 boot linux instructions and I was able to load up linux but was unable to run PS-PL applications as the command `xrt-smi examine` indicated there were no devices found (this is covered later in this guide).
+I tried using the Kria Ubuntu 24.04 boot linux instructions and I was able to load up linux but was unable to run PS-PL applications as the command `xrt-smi examine` indicated there were no devices found (this is covered later in this guide).
 
 
 ### Connecting to the FPGA
-After the FPGA is set up, you are ready to connect it to your PC. For this you need an ethernet cable, a micro-USB to USB cable like the one from the [basic accessory pack](https://www.amd.com/en/products/system-on-modules/kria/k26/kv260-vision-starter-kit/basic-accessory-pack.html), and also the power supply.
+After the FPGA is set up, you are ready to connect it to your PC. For this you need an ethernet cable, a micro-USB to USB cable like the one from the [basic accessory pack](https://www.amd.com/en/products/system-on-modules/kria/k26/kv260-vision-starter-kit/basic-accessory-pack.html), and also the [power supply](https://www.amd.com/en/products/system-on-modules/kria/k26/kv260-vision-starter-kit/power-supply-adapter.html).
 
 Connect the ethernet cable and micro USB into the FPGA, do not connect the usb end of the micro-USB to USB cable into your computer yet.
 
 Plug the power cable into the FPGA and wait for it to boot up, when you can see the heartbeat led blinking, you can plug the USB end of the cable into your computer. 
-
-To interface between your PC and the FPGA, I recommend using PuTTY (which can be installed with `sudo apt install putty`).
 ```
-# After you have plugged the USB cable into your PC, you need to identify which USB port the FPGA is using. You can use the below command to see the COM ports on your device. Running the command before and after plugging in the USB to your computer can be helpful in identifying the device.
+# After you have plugged the USB cable into your PC, you need to identify which USB port the FPGA is using. You can use the command below to see the COM ports on your device.
 dmesg | grep tty
 # My FPGA is on /dev/ttyUSB1 so I use the command below to start my putty sessions.
 sudo putty /dev/ttyUSB1 -serial -sercfg 115200,8,n,1,N
@@ -129,8 +126,40 @@ After you have started the putty session, log into the account you set up on the
 
 For now you can turn off the FPGA and leave it off until after getting the output files from Vitis (make sure to use the `sudo shutdown -h now` command).
 
+## Guide for Vivado and Vitis
+I was originally trying to follow [this Custom Kria SOM Platform Creation Example](https://docs.amd.com/r/en-US/Vitis-Tutorials-Vitis-Platform-Creation/Custom-Kria-SOM-Platform-Creation-Example) to learn the flow from Vivado to Vitis better. When I tried to run the output files on my KV260 running the Kria ubuntu 2022 LTS OS, I encountered the following error. 
+
+![Problem with the AMD 2025.1 guide Kria guide on Kria ubuntu 2022 LTS](screenshots/prob_with_guide_2022.png)
+
+This is because the Kria ubuntu 2022 LTS only supports GLIBC_2.35 and GLIBCXX_3.4.30. I do not know what OS the guide is using but when I tried using the Kria ubuntu 2024 LTS, which does support the libraries, the application could not run as it could not identify any devices. 
+
+![Problem with the AMD 2025.1 guide Kria guide on Kria ubuntu 2024 LTS](screenshots/prob_with_guide_2024.png)
+
+To see whether your FPGA is ready to do PS-PL applications, you can use the `xbutil examine` command which is now `xrt-smi examine` on newer XRT versions.
+If you see something like this image below, your PS-PL applications may not work:
+
+![xbutil examine 2024](screenshots/xbutil_examine_2024.png)
+
+The output should instead identify devices similarly to the photos below. The first photo is when the hardware is not loaded and the second is after loading the hardware with xmutil.
+
+![xbutil examine 2022](screenshots/xbutil_examine_2022.png) 
+![xbutil examine 2022 with HW loaded](screenshots/xbutil_examine_2022_HW_loaded.png) 
+
+If you can see a device present when running `xbutil examine` or `xrt-smi examine`, your FPGA is ready.
 
 ### Getting the Xilinx Support Archive (.xsa) with Vivado
+The .xsa file that I used is the one I made when following the above Custom Kria SOM Platform Creation Example. You can find the steps for [creating the Vivado hardware design and generating the XSA here](https://docs.amd.com/r/en-US/Vitis-Tutorials-Vitis-Platform-Creation/Step-1-Create-the-Vivado-Hardware-Design-and-Generate-XSA). 
+
 
 ### Getting the Xilinx Object (.xo) file with the Vivado RTL Kernel Wizard
+When creating your own custom RTL kernels that interface with the PS, the way to get the .xo file is with the [RTL Kernel Wizard](https://docs.amd.com/r/2022.1-English/ug1393-vitis-application-acceleration/RTL-Kernel-Wizard).
 
+I went with the following options in the RTL Kernel Wizard
+
+![kernel_wiz_1](screenshots/kernel_wiz_gen.png)
+
+![kernel_wiz_2](screenshots/kernel_wiz_scalars.png)
+
+![kernel_wiz_3](screenshots/kernel_wiz_glob_mem.png)
+
+![kernel_wiz_4](screenshots/kernel_wiz_stream.png)

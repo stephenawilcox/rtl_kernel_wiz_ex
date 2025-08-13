@@ -118,8 +118,8 @@ The .xsa file that I used is the one I made when following the above Custom Kria
 
 ---
 
-## Getting the Xilinx Object (.xo) file with the Vivado RTL Kernel Wizard
-When creating your own custom RTL kernels that interface with the PS, the way to get the .xo file is with the [RTL Kernel Wizard](https://docs.amd.com/r/2022.1-English/ug1393-vitis-application-acceleration/RTL-Kernel-Wizard).
+## Getting the Xilinx Object (.xo) with the Vivado RTL Kernel Wizard
+When creating your own custom RTL kernels that interface with the PS, the way to get the .xo archive is with the [RTL Kernel Wizard](https://docs.amd.com/r/2022.1-English/ug1393-vitis-application-acceleration/RTL-Kernel-Wizard).
 
 I went with the following options in the RTL Kernel Wizard
 
@@ -131,7 +131,7 @@ I went with the following options in the RTL Kernel Wizard
 
 ![kernel_wiz_4](screenshots/kernel_wiz_stream.png)
 
-Use these options and follow the directions in the guide linked above to get the .xo file and the generated host_example.cpp file.
+Use these options and follow the directions in the guide linked above to get the .xo and the generated host_example.cpp file.
 
 ---
 
